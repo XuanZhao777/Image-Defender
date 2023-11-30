@@ -29,3 +29,4 @@ def adversarial_attack(model, image, label, epsilon):
     # 执行对抗攻击
     perturbed_image = fgsm_attack(image, epsilon, data_grad)
     return perturbed_image
+
