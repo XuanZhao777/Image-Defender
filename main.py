@@ -2,16 +2,14 @@ import torch
 import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
 from torch.utils.data import DataLoader
-from PIL import Image
 import matplotlib.pyplot as plt
 from adversarial_attack import adversarial_attack
 from separate_attack import separate_attack
 from correct_attack import correct_attack
 from combine_parts import combine_parts
 from torchvision.models import resnet18
-import torchvision
+from test import test
 
-# 加载预训练的 ResNet-18 模型
 model = resnet18(weights='IMAGENET1K_V1')
 model.eval()
 
@@ -38,32 +36,44 @@ ground_truth_labels = torch.tensor([2])
 perturbed_image = adversarial_attack(model, original_image, label=ground_truth_labels, epsilon=epsilon)
 
 # 分离攻击和未受攻击的部分
-attacked_part = separate_attack(original_image, perturbed_image, threshold=threshold)
+attacked_part, unattacked_part = separate_attack(model, original_image, perturbed_image, threshold=threshold)
 
 # 校正攻击后的部分
-corrected_part = correct_attack(original_image, attacked_part, correction_factor=correction_factor)
+corrected_part = correct_attack(original_image, attacked_part)
+
 
 # 将未受攻击的部分和校正后的部分结合
 not_attacked_part = 1 - attacked_part
-combined_image = combine_parts(original_image, not_attacked_part, corrected_part)
+combined_image = combine_parts(not_attacked_part, corrected_part)
 
+test(combined_image, original_image)
 # 显示结果
 plt.figure(figsize=(15, 5))
 
-plt.subplot(1, 4, 1)
+plt.subplot(1, 6, 1)
 plt.imshow(original_image.squeeze().permute(1, 2, 0).detach().numpy())
 plt.title("Original Image")
 
-plt.subplot(1, 4, 2)
+plt.subplot(1, 6, 2)
 plt.imshow(perturbed_image.squeeze().detach().permute(1, 2, 0).detach().numpy())
 plt.title("Adversarial Image")
 
-plt.subplot(1, 4, 3)
+plt.subplot(1, 6, 3)
 plt.imshow(torch.clamp(attacked_part.squeeze().detach().permute(1, 2, 0), 0, 1).detach().numpy(), cmap='gray')
 plt.title("Attacked Part")
 
-plt.subplot(1, 4, 4)
+plt.subplot(1, 6, 4)
+plt.imshow(torch.clamp(unattacked_part.squeeze().detach().permute(1, 2, 0), 0, 1).detach().numpy(), cmap='gray')
+plt.title("unattacked Part")
+
+
+plt.subplot(1, 6, 5)
+plt.imshow(torch.clamp(corrected_part.squeeze().detach().permute(1, 2, 0), 0, 1).detach().numpy(), cmap='gray')
+plt.title("Correct Part")
+
+plt.subplot(1, 6, 6)
 plt.imshow(combined_image.squeeze().detach().permute(1, 2, 0).detach().numpy())
 plt.title("Combined Image")
+
 
 plt.show()
