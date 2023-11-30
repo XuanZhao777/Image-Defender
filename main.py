@@ -9,6 +9,8 @@ from correct_attack import correct_attack
 from combine_parts import combine_parts
 from torchvision.models import resnet18
 from test import test
+import tkinter as tk
+from PIL import Image, ImageTk
 
 model = resnet18(weights='IMAGENET1K_V1')
 model.eval()
@@ -44,7 +46,7 @@ corrected_part = correct_attack(original_image, attacked_part)
 
 # 将未受攻击的部分和校正后的部分结合
 not_attacked_part = 1 - attacked_part
-combined_image = combine_parts(not_attacked_part, corrected_part)
+combined_image = combine_parts(original_image, not_attacked_part, corrected_part)
 
 test(combined_image, original_image)
 # 显示结果
