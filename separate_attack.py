@@ -33,6 +33,6 @@ def separate_attack(model, original_image, perturbed_image, threshold=0.1):
     attacked_part[mask] = 1  # 用白色表示受到攻击的部分
 
     unattacked_part = perturbed_image.clone()
-    unattacked_part[~mask] = 0  # 用黑色表示未受到攻击的部分
+    unattacked_part[~mask] = original_image[~mask] # 用原来的颜色表示未受到攻击的部分
 
     return attacked_part, unattacked_part
