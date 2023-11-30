@@ -18,6 +18,3 @@ data_loader = DataLoader(cifar10_dataset, batch_size=1, shuffle=True)
 # 从数据加载器中获取一张图像
 original_image, original_label = next(iter(data_loader))
 
-# 显示原始图像
-original_image = original_image.squeeze().permute(1, 2, 0).numpy()
-Image.fromarray((original_image * 255).astype('uint8')).show()
