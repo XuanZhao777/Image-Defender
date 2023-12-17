@@ -12,7 +12,7 @@ Iterative Fast Gradient Sign Method (I-FGSM) attack, which is a variant of the F
 This method utilizes gradient information and a dynamic threshold to identify attacked pixels. Subsequently, it replaces the attacked portion in the original image with the corresponding portion from the attacked image, creating two separated parts.
 
 # Correction Part:
-Simple separation, currently unimproved
+This is a form of correction method based on the Mean Squared Error (MSE) loss. The idea is to adjust the attacked image by minimizing the mean squared error between the original image and the attacked image. The method utilizes gradient descent over a series of iterations to update the attacked image, aiming to reduce the difference between the original and attacked images. The ultimate goal is to make the attacked image closely resemble the original image through iterative optimization.
 
 # Combination Part:
 Simple combination, currently unimproved.
