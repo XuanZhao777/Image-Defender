@@ -9,7 +9,7 @@ CIFAR10
 Iterative Fast Gradient Sign Method (I-FGSM) attack, which is a variant of the Fast Gradient Sign Method (FGSM). The I-FGSM attack is an iterative approach where, in each iteration, a small perturbation is added to the input image in the direction that maximizes the loss. This process is repeated for a specified number of iterations.
 
 # Separation Part:
-ResNet18 Model
+This method utilizes gradient information and a dynamic threshold to identify attacked pixels. Subsequently, it replaces the attacked portion in the original image with the corresponding portion from the attacked image, creating two separated parts.
 
 # Correction Part:
 Simple separation, currently unimproved
