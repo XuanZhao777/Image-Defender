@@ -2,7 +2,8 @@
 
 
 # Workflow:
-![Uploading FlowChart.png…]()
+![FlowChart](https://github.com/XuanZhao777/Image-Defender/assets/149707203/d7b5a344-d2a5-4871-9a49-58f0d02d8402)
+
 
 
 
