@@ -12,44 +12,47 @@ from test import test
 import tkinter as tk
 from PIL import Image, ImageTk
 
+# Load a pre-trained ResNet18 model
 model = resnet18(weights='IMAGENET1K_V1')
 model.eval()
 
+# Define the data transformation
 transform = transforms.Compose([
     transforms.ToTensor(),
 ])
 
-# 下载CIFAR-10数据集
+# Download the CIFAR-10 dataset
 cifar10_dataset = CIFAR10(root='./data', train=True, download=True, transform=transform)
 
-# 使用数据加载器加载数据
+# Use a data loader to load the data
 data_loader = DataLoader(cifar10_dataset, batch_size=1, shuffle=True)
 
-# 从数据加载器中获取一张图像和标签
+# Get an image and its label from the data loader
 original_image, original_label = next(iter(data_loader))
 
-# 定义攻击参数和校正因子
-epsilon = 0.1
-threshold = 0.1
+# Define attack parameters and correction factor
+epsilon = 0.03
+alpha = 0.0015
+iterations = 80
 correction_factor = 0.5
 
-# 攻击图像
+# Perform adversarial attack on the image
 ground_truth_labels = torch.tensor([2])
-perturbed_image = adversarial_attack(model, original_image, label=ground_truth_labels, epsilon=epsilon)
+perturbed_image = adversarial_attack(model, original_image, label=ground_truth_labels, epsilon=epsilon, alpha=alpha, iterations=iterations)
 
-# 分离攻击和未受攻击的部分
-attacked_part, unattacked_part = separate_attack(model, original_image, perturbed_image, threshold=threshold)
+# Separate attacked and unattacked parts
+attacked_part, unattacked_part = separate_attack(model, original_image, perturbed_image)
 
-# 校正攻击后的部分
-corrected_part = correct_attack(original_image, attacked_part)
+# Correct the attacked part
+corrected_part = correct_attack(model, original_image, attacked_part, max_iterations=100, lr=0.01)
 
+# Combine the unattacked and corrected parts
+combined_image = combine_parts(original_image, unattacked_part, corrected_part)
 
-# 将未受攻击的部分和校正后的部分结合
-not_attacked_part = 1 - attacked_part
-combined_image = combine_parts(original_image, not_attacked_part, corrected_part)
-
+# Test the combined image
 test(combined_image, original_image)
-# 显示结果
+
+# Display the results
 plt.figure(figsize=(15, 5))
 
 plt.subplot(1, 6, 1)
@@ -66,16 +69,15 @@ plt.title("Attacked Part")
 
 plt.subplot(1, 6, 4)
 plt.imshow(torch.clamp(unattacked_part.squeeze().detach().permute(1, 2, 0), 0, 1).detach().numpy(), cmap='gray')
-plt.title("unattacked Part")
-
+plt.title("Unattacked Part")
 
 plt.subplot(1, 6, 5)
 plt.imshow(torch.clamp(corrected_part.squeeze().detach().permute(1, 2, 0), 0, 1).detach().numpy(), cmap='gray')
-plt.title("Correct Part")
+plt.title("Corrected Part")
 
 plt.subplot(1, 6, 6)
 plt.imshow(combined_image.squeeze().detach().permute(1, 2, 0).detach().numpy())
 plt.title("Combined Image")
 
-
 plt.show()
+
