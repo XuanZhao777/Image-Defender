@@ -18,9 +18,7 @@ This is a form of correction method based on the Mean Squared Error (MSE) loss. 
 This method combines or fuses three image components: the original image, the not attacked part, and the corrected part. It involves adding the not attacked part and the corrected part while subtracting the original part where they overlap. The three arrays are then merged. The result is clipped to ensure pixel values are within the valid range of [0, 1]. Finally, the merged NumPy array is converted back into a PyTorch tensor.
 
 # Validation Part:
-Validation using the PSNR method to assess the accuracy between the combined image and the original image
-
-In reality, the attacked image is not visually distinguishable. However, I visualized the attacked parts, which may result in colored spots in the final combined image. Although it affects the visual output, it helps identify areas that were attacked but not corrected.
+This is a method for evaluating the quality of the combined image using the Peak Signal-to-Noise Ratio (PSNR). PSNR is a metric commonly used to assess the quality of reconstructed or compressed images by measuring the ratio of the maximum possible power of a signal to the power of corrupting noise. 
 
 # Make an App:
 Executing the command "pyinstaller --onefile App.py" in the terminal will package the program into a standalone executable.
