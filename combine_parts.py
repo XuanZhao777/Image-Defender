@@ -1,38 +1,34 @@
 import torch
-import numpy as np
+import torch.nn as nn
+import torch.optim as optim
 
-def combine_parts(original_image, not_attacked_part, corrected_part):
-    # Convert PyTorch tensors to NumPy arrays
-    original_array = original_image.detach().cpu().numpy()
-    not_attacked_array = not_attacked_part.detach().cpu().numpy()
-    corrected_array = corrected_part.detach().cpu().numpy()
+def correct_attack(model, original_image, perturbed_image, max_iterations=100, lr=0.01):
+    # Ensure the model is in evaluation mode
+    model.eval()
 
-    # Ensure all arrays are 3-dimensional (C, H, W)
-    if original_array.ndim == 4:
-        original_array = original_array.squeeze(0)
-    if not_attacked_array.ndim == 4:
-        not_attacked_array = not_attacked_array.squeeze(0)
-    if corrected_array.ndim == 4:
-        corrected_array = corrected_array.squeeze(0)
+    # Clone the perturbed image and allow gradient computation
+    perturbed_image = perturbed_image.clone().detach()
+    perturbed_image.requires_grad = True
 
-    # Print shapes for debugging purposes
-    print("Original array shape:", original_array.shape)
-    print("Not attacked array shape:", not_attacked_array.shape)
-    print("Corrected array shape:", corrected_array.shape)
+    # Choose an optimizer
+    optimizer = optim.Adam([perturbed_image], lr=lr)
 
-    # Ensure all arrays have the same shape
-    if original_array.shape != not_attacked_array.shape or original_array.shape != corrected_array.shape:
-        raise ValueError("All input arrays must have the same shape.")
+    for iteration in range(max_iterations):
+        # Reset gradients
+        optimizer.zero_grad()
 
-    # Directly add the not attacked part and corrected part, subtract the overlapping part
-    combined_array = not_attacked_array + corrected_array - original_array
+        # Get the model outputs
+        perturbed_output = model(perturbed_image)
+        original_output = model(original_image)
 
-    # Clip the result to ensure values are in a valid range
-    combined_array = np.clip(combined_array, 0, 1)
+        # Define the loss function
+        loss = nn.MSELoss()(perturbed_output, original_output)
 
-    # Convert the combined array back to a PyTorch tensor
-    combined_tensor = torch.from_numpy(combined_array)
+        # Backward pass
+        loss.backward()
+        optimizer.step()
 
-    return combined_tensor
+    return perturbed_image
+
 
 
