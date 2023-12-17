@@ -1,28 +1,31 @@
 # Image-Defender
-流程图:
+Workflow:
 ![IMG_2044(20231202-192545)](https://github.com/XuanZhao777/Image-Defender/assets/149707203/5a20a134-1f24-4bac-99b7-c3bab1fab41d)
 
-# 数据库：
+# Database:
 CIFAR10
 
-# 攻击部分：
-fgsm_attack法
+# Attack Part:
+FGSM Attack
 
-# 分离部分:
-resnet18模型
+# Separation Part:
+ResNet18 Model
 
-# 校正部分:
-简单分离，目前未改进
+# Correction Part:
+Simple separation, currently unimproved
 
-# 结合部分:
-简单结合, 目前未改进。
-而且最后combined图像只是校正的图像。并不是未攻击部分和校正部分的结合。
-这是个Fake 代码
+# Combination Part:
+Simple combination, currently unimproved.
+Moreover, the final combined image is just the corrected image. It is not a combination of the unattacked and corrected parts.
+This is a fake code.
 
-# 验证部分:
-PSNR法验证结合图像与原图像的准确度
+# Validation Part:
+Validation using the PSNR method to assess the accuracy between the combined image and the original image
 
-实际上，攻击后的图像是看不出来攻击的。但是我把攻击的部分可视化了。可以看得出来哪些地方受到了攻击。
-这会导致最后结合的图像也会有彩色的斑点。虽然影响输出视觉效果，但是可以看出哪些被攻击的地方未被校正。
+In reality, the attacked image is not visually distinguishable. However, I visualized the attacked parts, which may result in colored spots in the final combined image. Although it affects the visual output, it helps identify areas that were attacked but not corrected.
+
+# Make an App:
+Executing the command "pyinstaller --onefile App.py" in the terminal will package the program into a standalone executable.
+
 
 
