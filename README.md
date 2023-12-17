@@ -15,9 +15,7 @@ This method utilizes gradient information and a dynamic threshold to identify at
 This is a form of correction method based on the Mean Squared Error (MSE) loss. The idea is to adjust the attacked image by minimizing the mean squared error between the original image and the attacked image. The method utilizes gradient descent over a series of iterations to update the attacked image, aiming to reduce the difference between the original and attacked images. The ultimate goal is to make the attacked image closely resemble the original image through iterative optimization.
 
 # Combination Part:
-Simple combination, currently unimproved.
-Moreover, the final combined image is just the corrected image. It is not a combination of the unattacked and corrected parts.
-This is a fake code.
+This method combines or fuses three image components: the original image, the not attacked part, and the corrected part. It involves adding the not attacked part and the corrected part while subtracting the original part where they overlap. The three arrays are then merged. The result is clipped to ensure pixel values are within the valid range of [0, 1]. Finally, the merged NumPy array is converted back into a PyTorch tensor.
 
 # Validation Part:
 Validation using the PSNR method to assess the accuracy between the combined image and the original image
